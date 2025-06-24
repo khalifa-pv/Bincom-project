@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SnapShelf</title>
+    <link rel="icon" href="{% static 'images/snapshelf_logo.png' %}" type="image/png">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Popup Notification Styles -->
+    <style>
+        .popup-message {
+            visibility: hidden;
+            min-width: 200px;
+            background-color: #3498db;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            padding: 12px 20px;
+            position: fixed;
+            z-index: 9999;
+            bottom: 30px;
+            right: 30px;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(20px);
+        }
+
+        .popup-message.show {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modal-buttons {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.modal-buttons .btn {
+  display: inline-block;
+  margin: 5px;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  background-color: #3498db;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.modal-buttons .btn:hover {
+  background-color: #2980b9;
+}
+
+.modal-buttons .delete-btn {
+  background-color: #e74c3c;
+}
+
+.modal-buttons .delete-btn:hover {
+  background-color: #c0392b;
+}
+
+.modal-buttons .share-btn {
+  background-color: #2ecc71;
+}
+
+.modal-buttons .share-btn:hover {
+  background-color: #27ae60;
+}
+
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="{% url 'gallery' %}">
+                    <img src="{% static 'images/snapshelf_logo.png' %}" alt="SnapShelf Logo" height="40">
+                    <span>SnapShelf</span>
+                </a>
+            </div>
+            <ul>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'upload_image' %}">Upload</a></li>
+                    <li>
+                        <form method="POST" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'register' %}">Register</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Popup Message Box -->
+    <div id="popup-message" class="popup-message"></div>
+
+    <!-- JavaScript to show Django messages -->
+    <script>
+        function showPopup(message) {
+            const popup = document.getElementById("popup-message");
+            popup.textContent = message;
+            popup.classList.add("show");
+
+            setTimeout(() => {
+                popup.classList.remove("show");
+            }, 3000);
+        }
+
+        {% if messages %}
+            {% for message in messages %}
+                showPopup("{{ message|escapejs }}");
+            {% endfor %}
+        {% endif %}
+    </script>
+
+    <script>
+  function openModal(imageUrl, imageId) {
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImg");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const deleteForm = document.getElementById("deleteForm");
+
+    modal.style.display = "block";
+    modalImg.src = imageUrl;
+    downloadBtn.href = imageUrl;
+
+    // Update delete form action
+    deleteForm.action = `/delete/${imageId}/`;
+  }
+
+  function shareImage() {
+    const imageUrl = document.getElementById("modalImg").src;
+    if (navigator.share) {
+      navigator.share({
+        title: "SnapShelf Image",
+        url: imageUrl
+      }).catch(console.error);
+    } else {
+      alert("Sharing is not supported in this browser.");
+    }
+  }
+
+  function closeModal() {
+    const modal = document.getElementById("imageModal");
+    modal.style.display = "none";
+  }
+</script>
+
+</body>
+</html>
