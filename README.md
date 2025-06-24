@@ -14,7 +14,7 @@ SnapShelf is a simple Django-based multimedia image gallery that allows users to
 I attempted to deploy SnapShelf to **Heroku**. However, I was unable to complete the deployment due to **card verification limitations on Heroku**.
 
 Instead, I have made the source code and setup instructions available via:
-- [GitHub Repository](https://github.com/TheoneHayo/Bincom-Django-Project)
+- [GitHub Repository](https://github.com/khalifa-pv/Bincom-project.git)
 - Google Drive folder (contains project files zipped and ready to run)
 
 ---
@@ -26,7 +26,7 @@ Follow the steps below to run SnapShelf on your local machine:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/TheoneHayo/Bincom-Django-Project.git
+https://github.com/khalifa-pv/Bincom-project.git
 cd multimedia_site
 
 2. (Optional) Create and Activate a Virtual Environment
